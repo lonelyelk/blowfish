@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/binary"
 	"fmt"
 )
 
@@ -53,6 +54,50 @@ func (bf *Blowfish) DecryptBlock(l, r *uint32) {
 	}
 
 	*l, *r = R^bf.P[0], L^bf.P[1]
+}
+
+func (bf *Blowfish) Encrypt(text []byte) []byte {
+	blocks := []uint32{uint32(len(text))}
+	toAppend := 4 - len(text)%8
+	if toAppend < 0 {
+		toAppend += 8
+	}
+	for i := 0; i < toAppend; i++ {
+		text = append(text, 0)
+	}
+	for i := 0; i < len(text); i += 4 {
+		blocks = append(blocks, binary.BigEndian.Uint32(text[i:i+4]))
+	}
+	for i := 0; i < len(blocks); i += 2 {
+		bf.EncryptBlock(&blocks[i], &blocks[i+1])
+	}
+	cryptoText := make([]byte, len(blocks)*4)
+	for i, block := range blocks {
+		cryptoText[i*4] = byte((block >> 24) & 0xff)
+		cryptoText[i*4+1] = byte((block >> 16) & 0xff)
+		cryptoText[i*4+2] = byte((block >> 8) & 0xff)
+		cryptoText[i*4+3] = byte(block & 0xff)
+	}
+	return cryptoText
+}
+
+func (bf *Blowfish) Decrypt(cryptoText []byte) []byte {
+	blocks := []uint32{}
+	for i := 0; i < len(cryptoText); i += 4 {
+		blocks = append(blocks, binary.BigEndian.Uint32(cryptoText[i:i+4]))
+	}
+	for i := 0; i < len(blocks); i += 2 {
+		bf.DecryptBlock(&blocks[i], &blocks[i+1])
+	}
+	length := int(blocks[0])
+	text := make([]byte, (len(blocks)-1)*4)
+	for i, block := range blocks[1:] {
+		text[i*4] = byte((block >> 24) & 0xff)
+		text[i*4+1] = byte((block >> 16) & 0xff)
+		text[i*4+2] = byte((block >> 8) & 0xff)
+		text[i*4+3] = byte(block & 0xff)
+	}
+	return text[:length]
 }
 
 func NewBlowfish(key []byte) *Blowfish {
