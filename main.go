@@ -100,6 +100,7 @@ func NewBlowfish(key []byte) *Blowfish {
 /**
  * https://en.wikipedia.org/wiki/Blowfish_(cipher)
  * https://github.com/piotrpsz/Blowfish
+ * https://www.schneier.com/academic/blowfish/
  */
 func main() {
 	// L := uint32(1)
