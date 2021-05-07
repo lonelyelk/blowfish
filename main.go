@@ -71,20 +71,20 @@ func (bf *Blowfish) Encrypt(text []byte) []byte {
 	for i := 0; i < len(blocks); i += 2 {
 		bf.EncryptBlock(&blocks[i], &blocks[i+1])
 	}
-	cryptoText := make([]byte, len(blocks)*4)
+	cipherText := make([]byte, len(blocks)*4)
 	for i, block := range blocks {
-		cryptoText[i*4] = byte((block >> 24) & 0xff)
-		cryptoText[i*4+1] = byte((block >> 16) & 0xff)
-		cryptoText[i*4+2] = byte((block >> 8) & 0xff)
-		cryptoText[i*4+3] = byte(block & 0xff)
+		cipherText[i*4] = byte((block >> 24) & 0xff)
+		cipherText[i*4+1] = byte((block >> 16) & 0xff)
+		cipherText[i*4+2] = byte((block >> 8) & 0xff)
+		cipherText[i*4+3] = byte(block & 0xff)
 	}
-	return cryptoText
+	return cipherText
 }
 
-func (bf *Blowfish) Decrypt(cryptoText []byte) []byte {
+func (bf *Blowfish) Decrypt(cipherText []byte) []byte {
 	blocks := []uint32{}
-	for i := 0; i < len(cryptoText); i += 4 {
-		blocks = append(blocks, binary.BigEndian.Uint32(cryptoText[i:i+4]))
+	for i := 0; i < len(cipherText); i += 4 {
+		blocks = append(blocks, binary.BigEndian.Uint32(cipherText[i:i+4]))
 	}
 	for i := 0; i < len(blocks); i += 2 {
 		bf.DecryptBlock(&blocks[i], &blocks[i+1])
@@ -144,13 +144,13 @@ func NewBlowfish(key []byte) *Blowfish {
 
 func main() {
 	bf := NewBlowfish([]byte("Maximum key length is four hundred and eight (448) bits!"))
-	text := []byte("CryptoHello CryptoWorld!")
-	cryptoText := bf.Encrypt(text)
+	text := []byte("CipherHello CipherWorld!")
+	cipherText := bf.Encrypt(text)
 
-	for _, b := range cryptoText {
+	for _, b := range cipherText {
 		fmt.Printf("0x%02x ", b)
 	}
 	fmt.Println()
 
-	fmt.Println(string(bf.Decrypt(cryptoText)))
+	fmt.Println(string(bf.Decrypt(cipherText)))
 }
