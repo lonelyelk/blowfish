@@ -142,21 +142,15 @@ func NewBlowfish(key []byte) *Blowfish {
 	return bf
 }
 
-/**
- * https://en.wikipedia.org/wiki/Blowfish_(cipher)
- * https://github.com/piotrpsz/Blowfish
- * https://www.schneier.com/academic/blowfish/
- */
 func main() {
-	// L := uint32(1)
-	L := uint32(0xdf333fd2)
-	// R := uint32(2)
-	R := uint32(0x30a71bb4)
-	bf := NewBlowfish([]byte("TESTKEY"))
+	bf := NewBlowfish([]byte("Maximum key length is four hundred and eight (448) bits!"))
+	text := []byte("CryptoHello CryptoWorld!")
+	cryptoText := bf.Encrypt(text)
 
-	fmt.Println("Initialized!")
-	bf.DecryptBlock(&L, &R)
-	fmt.Printf("%08x, %08x\n", L, R)
-	bf.EncryptBlock(&L, &R)
-	fmt.Printf("%08x, %08x\n", L, R)
+	for _, b := range cryptoText {
+		fmt.Printf("0x%02x ", b)
+	}
+	fmt.Println()
+
+	fmt.Println(string(bf.Decrypt(cryptoText)))
 }

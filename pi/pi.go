@@ -13,10 +13,6 @@ func modf(f float64) float64 {
 	return frac
 }
 
-/**
- * Bailey–Borwein–Plouffe formula
- * https://giordano.github.io/blog/2017-11-21-hexadecimal-pi/
- */
 func sum(n uint64, j uint64) (result float64) {
 	denom := float64(j)
 	base := big.NewInt(16)
