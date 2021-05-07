@@ -1,6 +1,6 @@
 # Blowfish
 
-This is an excercise in implementing [Blowfish](https://www.schneier.com/academic/blowfish/) ([wiki](https://en.wikipedia.org/wiki/Blowfish_(cipher))) algorythm designed by Bruce Schneier.
+This is an excercise in implementing [Blowfish](https://www.schneier.com/academic/blowfish/) ([wiki](https://en.wikipedia.org/wiki/Blowfish_(cipher))) algorithm designed by Bruce Schneier.
 
 ## Pi
 
